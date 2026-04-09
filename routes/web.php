@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\Companies\CompanyDetail;
+use App\Livewire\Companies\CompanyList;
 use App\Livewire\Contacts\ContactDetail;
 use App\Livewire\Contacts\ContactList;
 use App\Livewire\Dashboard;
@@ -13,8 +15,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Contacts
     Route::get('contacts', ContactList::class)->name('contacts.index');
     Route::get('contacts/{id}', ContactDetail::class)->name('contacts.show');
-    Route::view('companies', 'placeholder', ['title' => 'Companies'])->name('companies.index');
-    Route::view('companies/{id}', 'placeholder', ['title' => 'Company Detail'])->name('companies.show');
+    Route::get('companies', CompanyList::class)->name('companies.index');
+    Route::get('companies/{id}', CompanyDetail::class)->name('companies.show');
     Route::view('deals', 'placeholder', ['title' => 'Deals'])->name('deals.index');
     Route::view('deals/{id}', 'placeholder', ['title' => 'Deal Detail'])->name('deals.show');
     Route::view('activities', 'placeholder', ['title' => 'Activities'])->name('activities.index');
