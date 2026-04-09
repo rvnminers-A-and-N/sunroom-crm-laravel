@@ -1,11 +1,12 @@
 <?php
 
+use App\Livewire\Dashboard;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', Dashboard::class)->name('dashboard');
 
     // Placeholder routes — Livewire components will replace these
     Route::view('contacts', 'placeholder', ['title' => 'Contacts'])->name('contacts.index');

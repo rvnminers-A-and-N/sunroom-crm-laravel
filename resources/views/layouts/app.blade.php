@@ -11,6 +11,9 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=dm-sans:400,500,600,700&display=swap" rel="stylesheet" />
 
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" defer></script>
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -104,6 +107,8 @@
                     <h1 class="text-lg font-semibold text-text-primary hidden lg:block">
                         @if (isset($header))
                             {{ $header }}
+                        @else
+                            @yield('page-title')
                         @endif
                     </h1>
 
