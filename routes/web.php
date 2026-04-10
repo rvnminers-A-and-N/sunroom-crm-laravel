@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Activities\ActivityList;
+use App\Livewire\Admin\UserManagement;
 use App\Livewire\AiAssistant;
 use App\Livewire\Companies\CompanyDetail;
 use App\Livewire\Companies\CompanyList;
@@ -10,6 +11,7 @@ use App\Livewire\Dashboard;
 use App\Livewire\Deals\DealDetail;
 use App\Livewire\Deals\DealList;
 use App\Livewire\Deals\DealPipeline;
+use App\Livewire\Settings;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
@@ -27,11 +29,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('deals/{id}', DealDetail::class)->name('deals.show');
     Route::get('activities', ActivityList::class)->name('activities.index');
     Route::get('ai', AiAssistant::class)->name('ai.index');
-    Route::view('settings', 'placeholder', ['title' => 'Settings'])->name('settings');
+    Route::get('settings', Settings::class)->name('settings');
 });
 
 Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
-    Route::view('admin/users', 'placeholder', ['title' => 'User Management'])->name('admin.users');
+    Route::get('admin/users', UserManagement::class)->name('admin.users');
 });
 
 Route::view('profile', 'profile')
