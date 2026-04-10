@@ -128,7 +128,7 @@
                     <div class="space-y-3">
                         @foreach($deal->aiInsights->sortByDesc('generated_at') as $insight)
                             <div class="p-3 rounded-lg bg-brand-orange/5 border border-brand-orange/20">
-                                <p class="text-sm text-text-primary">{{ $insight->content }}</p>
+                                <p class="text-sm text-text-primary">{{ $insight->insight }}</p>
                                 <p class="text-xs text-gray-400 mt-1">{{ $insight->generated_at->diffForHumans() }}</p>
                             </div>
                         @endforeach
