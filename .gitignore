@@ -1,9 +1,13 @@
 /.phpunit.cache
+/coverage
 /node_modules
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
+/tests/Browser/screenshots
+/tests/Browser/console
+/tests/Browser/source
 /vendor
 .env
 .env.backup
