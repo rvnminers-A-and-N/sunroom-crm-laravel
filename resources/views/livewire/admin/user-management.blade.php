@@ -9,20 +9,6 @@
 @endphp
 
 <div>
-    @if(session('success'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
-             x-transition class="mb-4 px-4 py-3 rounded-lg bg-emerald-500/10 text-emerald-500 text-sm font-medium">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
-             x-transition class="mb-4 px-4 py-3 rounded-lg bg-coral/10 text-coral text-sm font-medium">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <x-page-header title="User Management" subtitle="{{ $users->total() }} {{ Str::plural('user', $users->total()) }}">
         <x-slot name="actions">
             <x-primary-button wire:click="create">
@@ -160,8 +146,12 @@
 
                     <div class="flex justify-end gap-3 pt-2">
                         <x-secondary-button @click="open = false" type="button">Cancel</x-secondary-button>
-                        <x-primary-button type="submit">
-                            {{ $editingUserId ? 'Update' : 'Create' }}
+                        <x-primary-button type="submit" wire:loading.attr="disabled" wire:target="save">
+                            <svg wire:loading wire:target="save" class="w-4 h-4 mr-1.5 animate-spin" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                            </svg>
+                            <span wire:loading.remove wire:target="save">{{ $editingUserId ? 'Update' : 'Create' }}</span>
+                            <span wire:loading wire:target="save">Saving...</span>
                         </x-primary-button>
                     </div>
                 </form>
