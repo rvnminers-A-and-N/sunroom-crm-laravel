@@ -116,20 +116,40 @@
 
             {{-- AI Insights --}}
             <div class="bg-white rounded-xl border border-gray-200 p-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-                    </svg>
-                    AI Insights
-                </h3>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-text-primary flex items-center gap-2">
+                        <svg class="w-5 h-5 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                        </svg>
+                        AI Insights
+                    </h3>
+                    @if($aiEnabled)
+                        <button wire:click="generateInsight" wire:loading.attr="disabled" wire:target="generateInsight"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-brand-orange/10 text-brand-orange hover:bg-brand-orange/20 transition-colors disabled:opacity-50">
+                            <svg wire:loading.remove wire:target="generateInsight" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                            </svg>
+                            <svg wire:loading wire:target="generateInsight" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                            </svg>
+                            <span wire:loading.remove wire:target="generateInsight">Generate</span>
+                            <span wire:loading wire:target="generateInsight">Generating...</span>
+                        </button>
+                    @endif
+                </div>
+                @if(! $aiEnabled)
+                    <div class="text-xs text-gray-500 mb-3 p-2 bg-gold/10 border border-gold/20 rounded-lg">
+                        AI is disabled. Set <code class="bg-gold/20 px-1 rounded">OLLAMA_ENABLED=true</code> in your <code class="bg-gold/20 px-1 rounded">.env</code> to generate insights.
+                    </div>
+                @endif
                 @if($deal->aiInsights->isEmpty())
                     <p class="text-sm text-gray-500 text-center py-4">No AI insights generated yet.</p>
                 @else
                     <div class="space-y-3">
                         @foreach($deal->aiInsights->sortByDesc('generated_at') as $insight)
                             <div class="p-3 rounded-lg bg-brand-orange/5 border border-brand-orange/20">
-                                <p class="text-sm text-text-primary">{{ $insight->insight }}</p>
-                                <p class="text-xs text-gray-400 mt-1">{{ $insight->generated_at->diffForHumans() }}</p>
+                                <p class="text-sm text-text-primary whitespace-pre-wrap">{{ $insight->insight }}</p>
+                                <p class="text-xs text-gray-400 mt-2">{{ $insight->generated_at->diffForHumans() }}</p>
                             </div>
                         @endforeach
                     </div>

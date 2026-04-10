@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ActivityController;
+use App\Http\Controllers\Api\AiController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\ContactController;
@@ -45,4 +46,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('tags', [TagController::class, 'store']);
     Route::put('tags/{id}', [TagController::class, 'update']);
     Route::delete('tags/{id}', [TagController::class, 'destroy']);
+
+    // AI
+    Route::prefix('ai')->group(function () {
+        Route::post('summarize', [AiController::class, 'summarize']);
+        Route::post('deal-insights/{dealId}', [AiController::class, 'dealInsights']);
+        Route::post('search', [AiController::class, 'search']);
+    });
 });
