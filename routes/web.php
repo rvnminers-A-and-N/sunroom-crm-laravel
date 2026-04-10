@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Activities\ActivityList;
 use App\Livewire\Companies\CompanyDetail;
 use App\Livewire\Companies\CompanyList;
 use App\Livewire\Contacts\ContactDetail;
@@ -23,7 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('deals', DealList::class)->name('deals.index');
     Route::get('deals/pipeline', DealPipeline::class)->name('deals.pipeline');
     Route::get('deals/{id}', DealDetail::class)->name('deals.show');
-    Route::view('activities', 'placeholder', ['title' => 'Activities'])->name('activities.index');
+    Route::get('activities', ActivityList::class)->name('activities.index');
     Route::view('ai', 'placeholder', ['title' => 'AI Assistant'])->name('ai.index');
     Route::view('settings', 'placeholder', ['title' => 'Settings'])->name('settings');
 });
