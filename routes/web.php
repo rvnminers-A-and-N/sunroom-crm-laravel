@@ -5,6 +5,9 @@ use App\Livewire\Companies\CompanyList;
 use App\Livewire\Contacts\ContactDetail;
 use App\Livewire\Contacts\ContactList;
 use App\Livewire\Dashboard;
+use App\Livewire\Deals\DealDetail;
+use App\Livewire\Deals\DealList;
+use App\Livewire\Deals\DealPipeline;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
@@ -17,8 +20,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('contacts/{id}', ContactDetail::class)->name('contacts.show');
     Route::get('companies', CompanyList::class)->name('companies.index');
     Route::get('companies/{id}', CompanyDetail::class)->name('companies.show');
-    Route::view('deals', 'placeholder', ['title' => 'Deals'])->name('deals.index');
-    Route::view('deals/{id}', 'placeholder', ['title' => 'Deal Detail'])->name('deals.show');
+    Route::get('deals', DealList::class)->name('deals.index');
+    Route::get('deals/pipeline', DealPipeline::class)->name('deals.pipeline');
+    Route::get('deals/{id}', DealDetail::class)->name('deals.show');
     Route::view('activities', 'placeholder', ['title' => 'Activities'])->name('activities.index');
     Route::view('ai', 'placeholder', ['title' => 'AI Assistant'])->name('ai.index');
     Route::view('settings', 'placeholder', ['title' => 'Settings'])->name('settings');
