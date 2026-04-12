@@ -2,8 +2,10 @@
 
 use App\Models\User;
 use App\Services\OllamaService;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Tests\DuskTestCase;
 use Tests\TestCase;
 
 /*
@@ -24,6 +26,10 @@ pest()->extend(TestCase::class)
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
     ->in('Unit');
+
+pest()->extend(DuskTestCase::class)
+    ->use(DatabaseTruncation::class)
+    ->in('Browser');
 
 /*
 |--------------------------------------------------------------------------

@@ -13,13 +13,25 @@ abstract class DuskTestCase extends BaseTestCase
 {
     /**
      * Prepare for Dusk test execution.
+     *
+     * If a `DUSK_DRIVER_URL` is set in the environment, we assume an
+     * external Chromedriver is already listening (typical local setup
+     * where the system Chromedriver matches the system Chromium build).
+     * Otherwise we fall back to the Chromedriver that ships with the
+     * Dusk package.
      */
     #[BeforeClass]
     public static function prepare(): void
     {
-        if (! static::runningInSail()) {
-            static::startChromeDriver(['--port=9515']);
+        if (static::runningInSail()) {
+            return;
         }
+
+        if (! empty($_ENV['DUSK_DRIVER_URL'] ?? env('DUSK_DRIVER_URL'))) {
+            return;
+        }
+
+        static::startChromeDriver(['--port=9515']);
     }
 
     /**
@@ -31,12 +43,20 @@ abstract class DuskTestCase extends BaseTestCase
             $this->shouldStartMaximized() ? '--start-maximized' : '--window-size=1920,1080',
             '--disable-search-engine-choice-screen',
             '--disable-smooth-scrolling',
+            '--no-sandbox',
         ])->unless($this->hasHeadlessDisabled(), function (Collection $items) {
             return $items->merge([
                 '--disable-gpu',
                 '--headless=new',
             ]);
         })->all());
+
+        // When using the system Chromedriver against system Chromium, we
+        // need to tell Chrome where its binary lives - the default
+        // `google-chrome` binary does not exist on this Ubuntu install.
+        if ($binary = $_ENV['DUSK_CHROME_BINARY'] ?? env('DUSK_CHROME_BINARY')) {
+            $options->setBinary($binary);
+        }
 
         return RemoteWebDriver::create(
             $_ENV['DUSK_DRIVER_URL'] ?? env('DUSK_DRIVER_URL') ?? 'http://localhost:9515',
