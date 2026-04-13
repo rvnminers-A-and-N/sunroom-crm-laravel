@@ -21,7 +21,7 @@ class Dashboard extends Component
         $userId = auth()->id();
 
         $dealsByStage = Deal::where('user_id', $userId)
-            ->selectRaw("stage, count(*) as count, sum(value) as total_value")
+            ->selectRaw('stage, count(*) as count, sum(value) as total_value')
             ->groupBy('stage')
             ->get()
             ->keyBy('stage');

@@ -20,7 +20,7 @@ class ActivityController extends Controller
             ->with(['contact', 'deal', 'user'])
             ->when($request->query('search'), fn ($q, $search) => $q->where(function ($q) use ($search) {
                 $q->where('subject', 'ilike', "%{$search}%")
-                  ->orWhere('body', 'ilike', "%{$search}%");
+                    ->orWhere('body', 'ilike', "%{$search}%");
             }))
             ->when($request->query('type'), fn ($q, $type) => $q->where('type', $type))
             ->when($request->query('contactId'), fn ($q, $id) => $q->where('contact_id', $id))

@@ -14,9 +14,7 @@ use Illuminate\Http\Request;
 
 class AiController extends Controller
 {
-    public function __construct(private OllamaService $ollama)
-    {
-    }
+    public function __construct(private OllamaService $ollama) {}
 
     public function summarize(Request $request): JsonResponse
     {

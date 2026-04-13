@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Log;
 class OllamaService
 {
     private string $baseUrl;
+
     private string $model;
+
     private bool $enabled;
 
     public function __construct()
@@ -69,7 +71,7 @@ class OllamaService
     public function smartSearch(string $query, Collection $contacts, Collection $activities): string
     {
         $contactList = $contacts->take(50)
-            ->map(fn ($c) => "- ID:{$c->id} {$c->first_name} {$c->last_name} (".($c->email ?? 'no email').") at ".($c->company?->name ?? 'N/A'))
+            ->map(fn ($c) => "- ID:{$c->id} {$c->first_name} {$c->last_name} (".($c->email ?? 'no email').') at '.($c->company?->name ?? 'N/A'))
             ->implode("\n");
 
         $activityList = $activities->take(50)
@@ -108,12 +110,14 @@ class OllamaService
 
             if (! $response->successful()) {
                 Log::error('Ollama API call failed', ['status' => $response->status(), 'body' => $response->body()]);
+
                 return 'AI service is currently unavailable. Please try again later.';
             }
 
             return $response->json('response', '');
         } catch (\Throwable $e) {
             Log::error('Ollama API exception', ['error' => $e->getMessage()]);
+
             return 'AI service is currently unavailable. Please try again later.';
         }
     }

@@ -13,7 +13,6 @@ use App\Models\Deal;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {

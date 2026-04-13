@@ -21,23 +21,34 @@ class ActivityList extends Component
 
     #[Url]
     public string $search = '';
+
     #[Url]
     public string $typeFilter = '';
+
     public ?int $contactFilter = null;
+
     public ?int $dealFilter = null;
 
     // Modal state
     public bool $showForm = false;
+
     public bool $showDeleteConfirm = false;
+
     public ?int $editingActivityId = null;
+
     public ?int $deletingActivityId = null;
 
     // Form fields
     public string $type = 'Note';
+
     public string $subject = '';
+
     public string $body = '';
+
     public string $occurredAt = '';
+
     public ?int $contactId = null;
+
     public ?int $dealId = null;
 
     public function updatingSearch(): void
@@ -144,7 +155,7 @@ class ActivityList extends Component
             ->with(['contact', 'deal', 'user'])
             ->when($this->search, fn ($q) => $q->where(function ($q) {
                 $q->where('subject', 'ilike', "%{$this->search}%")
-                  ->orWhere('body', 'ilike', "%{$this->search}%");
+                    ->orWhere('body', 'ilike', "%{$this->search}%");
             }))
             ->when($this->typeFilter, fn ($q) => $q->where('type', $this->typeFilter))
             ->when($this->contactFilter, fn ($q) => $q->where('contact_id', $this->contactFilter))
