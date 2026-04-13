@@ -147,10 +147,17 @@ jobs:
           DB_PASSWORD: sunroom
         run: php artisan migrate --force
 
-      - name: Install Chrome driver
-        run: php artisan dusk:chrome-driver --detect
+      - name: Start ChromeDriver
+        run: chromedriver --port=9515 &
 
       - name: Start server
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: sunroom_crm_test
+          DB_USERNAME: sunroom
+          DB_PASSWORD: sunroom
         run: php artisan serve --no-reload &
 
       - name: Run Dusk
@@ -162,6 +169,8 @@ jobs:
           DB_DATABASE: sunroom_crm_test
           DB_USERNAME: sunroom
           DB_PASSWORD: sunroom
+          DUSK_DRIVER_URL: http://127.0.0.1:9515
+          DUSK_CHROME_BINARY: google-chrome-stable
         run: php artisan dusk
 
       - if: failure()
