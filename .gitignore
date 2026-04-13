@@ -8,6 +8,9 @@
 /tests/Browser/screenshots
 /tests/Browser/console
 /tests/Browser/source
+/playwright-report
+/test-results
+/playwright/.auth
 /vendor
 .env
 .env.backup
