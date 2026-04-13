@@ -22,8 +22,8 @@ class ContactController extends Controller
             ->with(['company', 'tags'])
             ->when($request->query('search'), fn ($q, $search) => $q->where(function ($q) use ($search) {
                 $q->where('first_name', 'ilike', "%{$search}%")
-                  ->orWhere('last_name', 'ilike', "%{$search}%")
-                  ->orWhere('email', 'ilike', "%{$search}%");
+                    ->orWhere('last_name', 'ilike', "%{$search}%")
+                    ->orWhere('email', 'ilike', "%{$search}%");
             }))
             ->when($request->query('companyId'), fn ($q, $id) => $q->where('company_id', $id))
             ->when($request->query('tagId'), fn ($q, $id) => $q->whereHas('tags', fn ($t) => $t->where('tags.id', $id)))

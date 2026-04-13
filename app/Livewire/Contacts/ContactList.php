@@ -20,25 +20,39 @@ class ContactList extends Component
 
     #[Url]
     public string $search = '';
+
     public ?int $companyFilter = null;
+
     public ?int $tagFilter = null;
+
     public string $sortField = 'created_at';
+
     public string $sortDirection = 'desc';
 
     // Modal state
     public bool $showForm = false;
+
     public bool $showDeleteConfirm = false;
+
     public ?int $editingContactId = null;
+
     public ?int $deletingContactId = null;
 
     // Form fields
     public string $firstName = '';
+
     public string $lastName = '';
+
     public string $email = '';
+
     public string $phone = '';
+
     public string $title = '';
+
     public string $notes = '';
+
     public ?int $companyId = null;
+
     public array $tagIds = [];
 
     public function updatingSearch(): void
@@ -154,8 +168,8 @@ class ContactList extends Component
             ->with(['company', 'tags'])
             ->when($this->search, fn ($q) => $q->where(function ($q) {
                 $q->where('first_name', 'ilike', "%{$this->search}%")
-                  ->orWhere('last_name', 'ilike', "%{$this->search}%")
-                  ->orWhere('email', 'ilike', "%{$this->search}%");
+                    ->orWhere('last_name', 'ilike', "%{$this->search}%")
+                    ->orWhere('email', 'ilike', "%{$this->search}%");
             }))
             ->when($this->companyFilter, fn ($q) => $q->where('company_id', $this->companyFilter))
             ->when($this->tagFilter, fn ($q) => $q->whereHas('tags', fn ($t) => $t->where('tags.id', $this->tagFilter)))

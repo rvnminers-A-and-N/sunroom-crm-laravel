@@ -21,24 +21,36 @@ class DealList extends Component
 
     #[Url]
     public string $search = '';
+
     #[Url]
     public string $stageFilter = '';
+
     public string $sortField = 'created_at';
+
     public string $sortDirection = 'desc';
 
     // Modal state
     public bool $showForm = false;
+
     public bool $showDeleteConfirm = false;
+
     public ?int $editingDealId = null;
+
     public ?int $deletingDealId = null;
 
     // Form fields
     public string $title = '';
+
     public string $value = '';
+
     public string $stage = 'Lead';
+
     public ?int $contactId = null;
+
     public ?int $companyId = null;
+
     public string $expectedCloseDate = '';
+
     public string $notes = '';
 
     public function updatingSearch(): void
@@ -150,9 +162,9 @@ class DealList extends Component
             ->with(['contact', 'company'])
             ->when($this->search, fn ($q) => $q->where(function ($q) {
                 $q->where('title', 'ilike', "%{$this->search}%")
-                  ->orWhereHas('contact', fn ($c) => $c->where('first_name', 'ilike', "%{$this->search}%")
-                      ->orWhere('last_name', 'ilike', "%{$this->search}%"))
-                  ->orWhereHas('company', fn ($c) => $c->where('name', 'ilike', "%{$this->search}%"));
+                    ->orWhereHas('contact', fn ($c) => $c->where('first_name', 'ilike', "%{$this->search}%")
+                        ->orWhere('last_name', 'ilike', "%{$this->search}%"))
+                    ->orWhereHas('company', fn ($c) => $c->where('name', 'ilike', "%{$this->search}%"));
             }))
             ->when($this->stageFilter, fn ($q) => $q->where('stage', $this->stageFilter))
             ->orderBy($this->sortField, $this->sortDirection)

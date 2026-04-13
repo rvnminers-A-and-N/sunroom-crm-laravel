@@ -15,7 +15,9 @@ use Livewire\Component;
 class AiAssistant extends Component
 {
     public string $question = '';
+
     public array $messages = [];
+
     public bool $loading = false;
 
     public function ask(OllamaService $ollama): void

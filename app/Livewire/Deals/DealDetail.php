@@ -13,6 +13,7 @@ use Livewire\Component;
 class DealDetail extends Component
 {
     public Deal $deal;
+
     public bool $generatingInsight = false;
 
     public function mount(int $id): void

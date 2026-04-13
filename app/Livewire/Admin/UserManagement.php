@@ -24,14 +24,20 @@ class UserManagement extends Component
 
     // Modal state
     public bool $showForm = false;
+
     public bool $showDeleteConfirm = false;
+
     public ?int $editingUserId = null;
+
     public ?int $deletingUserId = null;
 
     // Form fields
     public string $name = '';
+
     public string $email = '';
+
     public string $password = '';
+
     public string $role = 'User';
 
     public function mount(): void
@@ -110,6 +116,7 @@ class UserManagement extends Component
             session()->flash('error', "You can't delete your own account.");
             $this->showDeleteConfirm = false;
             $this->deletingUserId = null;
+
             return;
         }
 
@@ -124,7 +131,7 @@ class UserManagement extends Component
         $users = User::query()
             ->when($this->search, fn ($q) => $q->where(function ($q) {
                 $q->where('name', 'ilike', "%{$this->search}%")
-                  ->orWhere('email', 'ilike', "%{$this->search}%");
+                    ->orWhere('email', 'ilike', "%{$this->search}%");
             }))
             ->withCount(['contacts', 'deals'])
             ->orderBy('name')

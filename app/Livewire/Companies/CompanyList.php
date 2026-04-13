@@ -18,24 +18,37 @@ class CompanyList extends Component
 
     #[Url]
     public string $search = '';
+
     public string $sortField = 'name';
+
     public string $sortDirection = 'asc';
 
     // Modal state
     public bool $showForm = false;
+
     public bool $showDeleteConfirm = false;
+
     public ?int $editingCompanyId = null;
+
     public ?int $deletingCompanyId = null;
 
     // Form fields
     public string $name = '';
+
     public string $industry = '';
+
     public string $website = '';
+
     public string $phone = '';
+
     public string $address = '';
+
     public string $city = '';
+
     public string $state = '';
+
     public string $zip = '';
+
     public string $notes = '';
 
     public function updatingSearch(): void
@@ -139,8 +152,8 @@ class CompanyList extends Component
             ->withCount(['contacts', 'deals'])
             ->when($this->search, fn ($q) => $q->where(function ($q) {
                 $q->where('name', 'ilike', "%{$this->search}%")
-                  ->orWhere('industry', 'ilike', "%{$this->search}%")
-                  ->orWhere('city', 'ilike', "%{$this->search}%");
+                    ->orWhere('industry', 'ilike', "%{$this->search}%")
+                    ->orWhere('city', 'ilike', "%{$this->search}%");
             }))
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate(25);

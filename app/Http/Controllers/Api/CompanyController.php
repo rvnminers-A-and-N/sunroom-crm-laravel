@@ -21,8 +21,8 @@ class CompanyController extends Controller
             ->withCount(['contacts', 'deals'])
             ->when($request->query('search'), fn ($q, $search) => $q->where(function ($q) use ($search) {
                 $q->where('name', 'ilike', "%{$search}%")
-                  ->orWhere('industry', 'ilike', "%{$search}%")
-                  ->orWhere('city', 'ilike', "%{$search}%");
+                    ->orWhere('industry', 'ilike', "%{$search}%")
+                    ->orWhere('city', 'ilike', "%{$search}%");
             }))
             ->orderBy('name')
             ->paginate($perPage);

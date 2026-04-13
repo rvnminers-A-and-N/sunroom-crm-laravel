@@ -20,19 +20,27 @@ class Settings extends Component
 
     // Profile fields
     public string $name = '';
+
     public string $email = '';
 
     // Password fields
     public string $currentPassword = '';
+
     public string $newPassword = '';
+
     public string $newPasswordConfirmation = '';
 
     // Tag form fields
     public bool $showTagForm = false;
+
     public bool $showDeleteConfirm = false;
+
     public ?int $editingTagId = null;
+
     public ?int $deletingTagId = null;
+
     public string $tagName = '';
+
     public string $tagColor = '#02795F';
 
     public function mount(): void
