@@ -1,0 +1,311 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  tests:
+    name: PEST (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      matrix:
+        php: ['8.3']
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: sunroom
+          POSTGRES_PASSWORD: sunroom
+          POSTGRES_DB: sunroom_crm_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U sunroom"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: pcov
+          extensions: pdo_pgsql, intl, mbstring
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Install NPM dependencies and build
+        run: npm ci && npm run build
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run PEST with coverage
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: sunroom_crm_test
+          DB_USERNAME: sunroom
+          DB_PASSWORD: sunroom
+        run: |
+          php artisan migrate --force
+          ./vendor/bin/pest --coverage --min=100 --coverage-clover=coverage/clover.xml
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 14
+
+  dusk:
+    name: Dusk (Browser tests)
+    runs-on: ubuntu-latest
+    needs: tests
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: sunroom
+          POSTGRES_PASSWORD: sunroom
+          POSTGRES_DB: sunroom_crm_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U sunroom"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          extensions: pdo_pgsql, intl, mbstring
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          composer install --no-interaction --prefer-dist
+          npm ci && npm run build
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run migrations
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: sunroom_crm_test
+          DB_USERNAME: sunroom
+          DB_PASSWORD: sunroom
+        run: php artisan migrate --force
+
+      - name: Install Chrome driver
+        run: php artisan dusk:chrome-driver --detect
+
+      - name: Start server
+        run: php artisan serve --no-reload &
+
+      - name: Run Dusk
+        env:
+          APP_URL: http://127.0.0.1:8000
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: sunroom_crm_test
+          DB_USERNAME: sunroom
+          DB_PASSWORD: sunroom
+        run: php artisan dusk
+
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dusk-screenshots
+          path: tests/Browser/screenshots
+
+  playwright:
+    name: Playwright (Cross-browser E2E)
+    runs-on: ubuntu-latest
+    needs: tests
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: sunroom
+          POSTGRES_PASSWORD: sunroom
+          POSTGRES_DB: sunroom_crm_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U sunroom"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          extensions: pdo_pgsql, intl, mbstring
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          composer install --no-interaction --prefer-dist
+          npm ci && npm run build
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Seed test database
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: sunroom_crm_test
+          DB_USERNAME: sunroom
+          DB_PASSWORD: sunroom
+        run: php artisan migrate:fresh --force --seed --seeder='Database\Seeders\PlaywrightSeeder'
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright
+        env:
+          DB_PASSWORD: sunroom
+        run: npx playwright test
+
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+  api-compat:
+    name: API compatibility (.NET parity)
+    runs-on: ubuntu-latest
+    needs: tests
+    timeout-minutes: 30
+    if: ${{ vars.RUN_API_COMPAT == 'true' }}
+    env:
+      SA_PASSWORD: ${{ secrets.SA_PASSWORD }}
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: sunroom
+          POSTGRES_PASSWORD: sunroom
+          POSTGRES_DB: sunroom_crm_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U sunroom"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout .NET API repo
+        uses: actions/checkout@v4
+        with:
+          repository: rvnminers-A-and-N/sunroom-crm-dotnet
+          path: dotnet-api
+
+      - name: Start .NET API via docker-compose
+        working-directory: dotnet-api
+        run: docker compose up -d --build
+
+      - name: Wait for .NET API to be ready
+        run: |
+          for i in $(seq 1 60); do
+            if curl -s -o /dev/null --max-time 3 http://localhost:5236/; then
+              echo ".NET API is ready"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo ".NET API failed to start"
+          docker compose -f dotnet-api/docker-compose.yml logs
+          exit 1
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          extensions: pdo_pgsql, intl, mbstring
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          composer install --no-interaction --prefer-dist
+          npm ci && npm run build
+
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Start Laravel API
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: sunroom_crm_test
+          DB_USERNAME: sunroom
+          DB_PASSWORD: sunroom
+        run: |
+          php artisan migrate --force
+          php artisan serve --host=127.0.0.1 --port=8000 --no-reload &
+          sleep 3
+
+      - name: Run API compatibility tests
+        env:
+          LARAVEL_API_URL: http://127.0.0.1:8000/api
+          DOTNET_API_URL: http://localhost:5236/api
+        run: node tests/ApiCompat/api-compat.test.mjs
+
+      - name: Stop .NET API containers
+        if: always()
+        working-directory: dotnet-api
+        run: docker compose down -v
