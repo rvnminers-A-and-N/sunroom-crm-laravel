@@ -102,9 +102,9 @@ Visit [http://localhost:8000](http://localhost:8000) and log in with one of the 
 
 | Email | Password | Role |
 |-------|----------|------|
-| `austin@sunroomcrm.com` | `password` | Admin |
-| `sarah@sunroomcrm.com` | `password` | Manager |
-| `jake@sunroomcrm.com` | `password` | User |
+| `austin@sunroomcrm.net` | `password` | Admin |
+| `sarah@sunroomcrm.net` | `password` | Manager |
+| `jake@sunroomcrm.net` | `password` | User |
 
 ### Optional: enable AI features
 
@@ -192,7 +192,7 @@ curl -X POST http://localhost:8000/api/auth/register \
 # Login (returns a Sanctum token)
 curl -X POST http://localhost:8000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"austin@sunroomcrm.com","password":"password"}'
+  -d '{"email":"austin@sunroomcrm.net","password":"password"}'
 ```
 
 Use the returned token as a Bearer header on all subsequent requests:
