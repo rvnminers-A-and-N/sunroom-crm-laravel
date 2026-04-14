@@ -1,56 +1,58 @@
 # Sunroom CRM — Laravel
 
-A full-stack CRM built on the **TALL stack** (Tailwind CSS, Alpine.js, Livewire, Laravel) with a paired REST API. This is one of four sibling implementations of the same Sunroom CRM product:
+A full-featured CRM built on the **TALL stack** (Tailwind CSS, Alpine.js, Livewire, Laravel) with a paired REST API, backed by PostgreSQL. This is one of six sibling implementations of the same Sunroom CRM product.
 
-| Repo | Stack |
-|------|-------|
-| [`sunroom-crm-dotnet`](https://github.com/rvnminers-A-and-N/sunroom-crm-dotnet) | ASP.NET Core 9 REST API + Entity Framework Core |
-| [`sunroom-crm-angular`](https://github.com/rvnminers-A-and-N/sunroom-crm-angular) | Angular 20 SPA |
-| [`sunroom-crm-react`](https://github.com/rvnminers-A-and-N/sunroom-crm-react) | React 19 + Vite SPA |
-| [`sunroom-crm-vue`](https://github.com/rvnminers-A-and-N/sunroom-crm-vue) | Vue 3 + Vite SPA |
-| **`sunroom-crm-laravel`** | **Laravel 12 + Livewire 3 (TALL stack) — backend AND frontend** |
+## About Sunroom CRM
 
-This Laravel build is unique: the same repo serves the **server-rendered TALL frontend** *and* exposes a **Sanctum-authenticated REST API** that the Angular / React / Vue SPAs can use as a drop-in replacement for the .NET backend.
+Sunroom CRM is a multi-frontend platform where the same business requirements are implemented across multiple technology stacks. Every frontend shares a single .NET 8 REST API and SQL Server database, and this Laravel build additionally serves its own Sanctum-authenticated API that the SPA frontends can use as a drop-in replacement for the .NET backend.
 
----
+| Repository | Technology | Description |
+|------------|-----------|-------------|
+| [`sunroom-crm-dotnet`](https://github.com/rvnminers-A-and-N/sunroom-crm-dotnet) | .NET 8 / EF Core | REST API + SQL Server |
+| [`sunroom-crm-angular`](https://github.com/rvnminers-A-and-N/sunroom-crm-angular) | Angular 21 | SPA frontend |
+| [`sunroom-crm-react`](https://github.com/rvnminers-A-and-N/sunroom-crm-react) | React 19 / Vite | SPA frontend |
+| [`sunroom-crm-vue`](https://github.com/rvnminers-A-and-N/sunroom-crm-vue) | Vue 3 / Vite | SPA frontend |
+| [`sunroom-crm-blazor`](https://github.com/rvnminers-A-and-N/sunroom-crm-blazor) | Blazor / .NET 8 | WebAssembly frontend |
+| **`sunroom-crm-laravel`** | **Laravel 13 / Livewire 3** | **Full-stack (backend + frontend)** |
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Laravel 13 + PHP 8.5 |
+| UI | Livewire 3 + Alpine.js |
+| Styling | Tailwind CSS 4 |
+| Charts | Chart.js 4 (CDN) |
+| Drag & Drop | SortableJS (CDN) |
+| Database | PostgreSQL 18 |
+| Auth | Laravel Sanctum + Breeze |
+| Unit / Feature Tests | PEST 4 + pest-plugin-livewire |
+| Browser Tests | Laravel Dusk 8 |
+| E2E Tests | Playwright 1.59 (Chromium, Firefox, WebKit) |
+| CI/CD | GitHub Actions |
 
 ## Features
 
 - **Dashboard** — stat cards, pipeline value chart (Chart.js), recent activity feed
 - **Contacts** — paginated CRUD with search, company/tag filters, tag chips, activity timeline
 - **Companies** — CRUD with industry, location, contact and deal counts
-- **Deals** — table view + drag-and-drop **Kanban pipeline** (SortableJS) with auto-set close dates for Won/Lost
+- **Deals** — table view + drag-and-drop Kanban pipeline (SortableJS) with auto-set close dates for Won/Lost
 - **Activities** — type-filtered timeline (Note / Call / Email / Meeting / Task) tied to contacts and deals
-- **AI Assistant** — chat-style assistant grounded in the user's CRM data, deal-specific insight generation, optional [Ollama](https://ollama.ai/) integration
+- **AI Assistant** — chat-style assistant grounded in the user's CRM data, deal-specific insight generation, optional Ollama integration
 - **Settings** — tabbed Profile / Password / Tag manager (with native color picker)
 - **Admin User Management** — admin-only CRUD for users with role assignment
 - **REST API** — full Sanctum-authenticated REST surface mirroring the .NET API contract so the SPA frontends work with this Laravel backend unchanged
+- **Responsive Layout** — sidebar navigation with mobile-friendly collapse
 
----
-
-## Stack
-
-- **Laravel 12** + **PHP 8.5**
-- **Livewire 3** for full-page server-driven UI
-- **Alpine.js** for client-side interactivity (modals, drag-and-drop wiring, toasts)
-- **Tailwind CSS 4** with the Sunroom brand palette (emerald, coral, brand-orange, gold, cream)
-- **PostgreSQL 18** (uses `ilike` for case-insensitive search)
-- **Laravel Sanctum** for API token authentication
-- **Laravel Breeze** (Livewire flavor) for auth scaffolding
-- **Pest** for testing
-- **Chart.js** and **SortableJS** via CDN
-
----
-
-## Local Setup
+## Getting Started
 
 ### Prerequisites
 
 - PHP 8.5+ with `pgsql`, `mbstring`, `xml`, `bcmath`, `curl`, `intl` extensions
 - Composer 2.8+
-- Node 24+ and npm
-- PostgreSQL 18 running locally (or update `.env` to point at any PostgreSQL instance)
-- *(Optional)* [Ollama](https://ollama.ai/) running locally for AI features
+- Node.js 24+ and npm 11+
+- PostgreSQL 18 running locally
+- *(Optional)* [Ollama](https://ollama.ai/) for AI features
 
 ### Install
 
@@ -106,7 +108,7 @@ Visit [http://localhost:8000](http://localhost:8000) and log in with one of the 
 
 ### Optional: enable AI features
 
-To turn on the AI Assistant and deal-insight generation, install [Ollama](https://ollama.ai/), pull a model, and set:
+Install [Ollama](https://ollama.ai/), pull a model, and set:
 
 ```env
 OLLAMA_ENABLED=true
@@ -114,9 +116,66 @@ OLLAMA_BASE_URL=http://localhost:11434
 OLLAMA_MODEL=llama3
 ```
 
-When `OLLAMA_ENABLED=false` (the default), AI views render gracefully with a "disabled" notice and no requests are made.
+When `OLLAMA_ENABLED=false` (the default), AI views render gracefully with a "disabled" notice.
 
----
+## Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `php artisan serve` | Start the development server |
+| `npm run dev` | Start Vite dev server (Tailwind + JS) |
+| `npm run build` | Production build |
+| `php artisan test` | Run PEST unit and feature tests |
+| `php artisan test --coverage` | Run PEST with coverage report |
+| `php artisan dusk` | Run Dusk browser tests |
+| `npx playwright test` | Run Playwright E2E tests |
+| `./vendor/bin/pint` | Fix code style (Laravel Pint) |
+
+## Testing
+
+### Unit and Feature Tests
+
+502 PEST tests across 61 suites at **100% line coverage**, enforced by the CI pipeline.
+
+```bash
+php artisan test --coverage --min=100
+```
+
+Tests cover all Eloquent models, Livewire components, API controllers, form requests, policies, middleware, enums, services, and Blade view components.
+
+### Browser Tests (Dusk)
+
+14 Dusk browser tests across 5 suites running in headless Chrome:
+
+- **LoginFlowTest** — authentication, wrong password error, unauthenticated redirect
+- **ContactCrudTest** — full create/edit/delete modal flow, inline validation
+- **DealPipelineDragTest** — Kanban column rendering, stage transitions, closed_at behavior
+- **AdminRouteGuardTest** — 403 for non-admins, admin access, sidebar link visibility
+- **NavigationTest** — sidebar navigation between pages, logout flow
+
+### E2E Tests (Playwright)
+
+7 Playwright tests across 3 browsers (Chromium, Firefox, WebKit) — 21 total test runs:
+
+- **auth-guard** — unauthenticated redirect, admin route 403
+- **cross-browser-render** — public and authenticated pages render without console errors
+- **golden-path** — dashboard, create contact, create deal, pipeline view, logout
+
+### API Compatibility Tests
+
+A Node.js test script (`tests/ApiCompat/api-compat.test.mjs`) registers a user on both the Laravel and .NET APIs, then hits matching endpoints and compares response shapes to verify the two backends are interchangeable.
+
+## CI/CD Pipeline
+
+GitHub Actions runs five jobs on every push and pull request:
+
+| Job | Description |
+|-----|-------------|
+| **Pint** | Code style check — fails fast before tests run |
+| **PEST** | Unit and feature tests on PHP 8.4 and 8.5 with 100% coverage gate |
+| **Dusk** | Browser tests in headless Chrome against PostgreSQL |
+| **Playwright** | Cross-browser E2E across Chromium, Firefox, and WebKit |
+| **API Compat** | Spins up the .NET API via Docker Compose and compares response shapes (gated behind `RUN_API_COMPAT` variable) |
 
 ## REST API
 
@@ -166,7 +225,7 @@ curl http://localhost:8000/api/contacts \
 
 ### Using with the SPA frontends
 
-Point any of the sibling SPAs at `http://localhost:8000/api` and they'll work unchanged. Example for the Angular repo:
+Point any of the sibling SPAs at `http://localhost:8000/api` and they work unchanged. Example for Angular:
 
 ```ts
 // src/environments/environment.ts
@@ -175,9 +234,7 @@ export const environment = {
 };
 ```
 
----
-
-## Project Structure
+## Architecture
 
 ```
 app/
@@ -211,29 +268,25 @@ routes/
 ├── api.php                 # REST API
 ├── auth.php                # Breeze auth routes
 └── web.php                 # TALL frontend routes
+tests/
+├── Feature/                # 61 PEST test suites
+├── Browser/                # 5 Dusk test suites
+├── ApiCompat/              # API compatibility test script
+playwright/
+└── tests/                  # 3 Playwright spec files
 ```
 
----
+## Key Patterns
 
-## Architecture Notes
-
-- **No repository layer.** Eloquent is used directly inside Livewire components and API controllers — idiomatic Laravel.
-- **Integer primary keys** (not UUIDs) so the SPA frontends are interchangeable between this Laravel backend and the .NET backend.
-- **PascalCase enum values** match the .NET JSON output exactly (`Lead`, `Qualified`, `Won`, etc.).
-- **camelCase API JSON.** API Resources transform `snake_case` columns to `camelCase` for SPA compatibility.
-- **Ownership-based authorization** via Laravel Policies — users only see and edit their own contacts, deals, and activities.
-- **Flat Livewire component tree.** Each route maps to a single full-page component; modals and forms live inside via Alpine.js + `@entangle`.
-- **Centralized flash toast** (`<x-flash-toast>`) mounted once in the layout listens for `session('success' | 'error')`.
-
----
-
-## Testing
-
-```bash
-php artisan test
-```
-
----
+- **No repository layer** — Eloquent is used directly inside Livewire components and API controllers, idiomatic Laravel
+- **Integer primary keys** (not UUIDs) so the SPA frontends are interchangeable between this Laravel backend and the .NET backend
+- **PascalCase enum values** match the .NET JSON output exactly (`Lead`, `Qualified`, `Won`, etc.)
+- **camelCase API JSON** — API Resources transform `snake_case` columns to `camelCase` for SPA compatibility
+- **Ownership-based authorization** via Laravel Policies — users only see and edit their own contacts, deals, and activities
+- **Flat Livewire component tree** — each route maps to a single full-page component; modals and forms live inside via Alpine.js + `@entangle`
+- **Centralized flash toast** (`<x-flash-toast>`) mounted once in the layout listens for `session('success' | 'error')`
+- **Three-tier testing** — PEST for unit/feature, Dusk for browser, Playwright for cross-browser E2E
+- **API parity testing** — Node.js script compares Laravel and .NET API response shapes to guarantee frontend interchangeability
 
 ## License
 
