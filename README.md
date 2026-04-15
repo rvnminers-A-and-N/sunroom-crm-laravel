@@ -1,19 +1,23 @@
 # Sunroom CRM — Laravel
 
-A full-featured CRM built on the **TALL stack** (Tailwind CSS, Alpine.js, Livewire, Laravel) with a paired REST API, backed by PostgreSQL. This is one of six sibling implementations of the same Sunroom CRM product.
+This is the Laravel full-stack implementation of [Sunroom CRM](https://sunroomcrm.net), built on the **TALL stack** (Tailwind CSS, Alpine.js, Livewire, Laravel) with a paired REST API, backed by PostgreSQL.
 
 ## About Sunroom CRM
 
-Sunroom CRM is a multi-frontend platform where the same business requirements are implemented across multiple technology stacks. Every frontend shares a single .NET 8 REST API and SQL Server database, and this Laravel build additionally serves its own Sanctum-authenticated API that the SPA frontends can use as a drop-in replacement for the .NET backend.
+Sunroom CRM is a multi-frontend platform where the same business requirements are implemented across multiple technology stacks. The project showcases how different frontend ecosystems approach the same real-world problems: authentication, CRUD operations, real-time data visualization, drag-and-drop workflows, role-based access control, and AI-powered features.
+
+Every frontend shares a single .NET 8 REST API and SQL Server database, and this Laravel build additionally serves its own Sanctum-authenticated API that the SPA frontends can use as a drop-in replacement for the .NET backend.
+
+### The Full Stack
 
 | Repository | Technology | Description |
 |------------|-----------|-------------|
-| [`sunroom-crm-dotnet`](https://github.com/rvnminers-A-and-N/sunroom-crm-dotnet) | .NET 8 / EF Core | REST API + SQL Server |
-| [`sunroom-crm-angular`](https://github.com/rvnminers-A-and-N/sunroom-crm-angular) | Angular 21 | SPA frontend |
-| [`sunroom-crm-react`](https://github.com/rvnminers-A-and-N/sunroom-crm-react) | React 19 / Vite | SPA frontend |
-| [`sunroom-crm-vue`](https://github.com/rvnminers-A-and-N/sunroom-crm-vue) | Vue 3 / Vite | SPA frontend |
+| [`sunroom-crm-dotnet`](https://github.com/rvnminers-A-and-N/sunroom-crm-dotnet) | .NET 8 / EF Core | Shared REST API with JWT auth, AI endpoints, and Docker support |
+| [`sunroom-crm-angular`](https://github.com/rvnminers-A-and-N/sunroom-crm-angular) | Angular 21 | Angular frontend with 100% test coverage |
+| [`sunroom-crm-react`](https://github.com/rvnminers-A-and-N/sunroom-crm-react) | React 19 / Vite | React frontend with 100% test coverage |
+| [`sunroom-crm-vue`](https://github.com/rvnminers-A-and-N/sunroom-crm-vue) | Vue 3 / Vite | Vue frontend |
 | [`sunroom-crm-blazor`](https://github.com/rvnminers-A-and-N/sunroom-crm-blazor) | Blazor / .NET 8 | WebAssembly frontend |
-| **`sunroom-crm-laravel`** | **Laravel 13 / Livewire 3** | **Full-stack (backend + frontend)** |
+| **`sunroom-crm-laravel`** | **Laravel 13 / Livewire 3** | **Full-stack (backend + frontend) with 100% test coverage** |
 
 ## Tech Stack
 
@@ -276,7 +280,7 @@ playwright/
 └── tests/                  # 3 Playwright spec files
 ```
 
-## Key Patterns
+### Key Patterns
 
 - **No repository layer** — Eloquent is used directly inside Livewire components and API controllers, idiomatic Laravel
 - **Integer primary keys** (not UUIDs) so the SPA frontends are interchangeable between this Laravel backend and the .NET backend
@@ -290,4 +294,4 @@ playwright/
 
 ## License
 
-MIT
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
