@@ -29,6 +29,7 @@ Every frontend shares a single .NET 8 REST API and SQL Server database, and this
 | Charts | Chart.js 4 (CDN) |
 | Drag & Drop | SortableJS (CDN) |
 | Database | PostgreSQL 18 |
+| Queue / Cache | Redis |
 | Auth | Laravel Sanctum + Breeze |
 | Unit / Feature Tests | PEST 4 + pest-plugin-livewire |
 | Browser Tests | Laravel Dusk 8 |
@@ -56,6 +57,7 @@ Every frontend shares a single .NET 8 REST API and SQL Server database, and this
 - Composer 2.8+
 - Node.js 24+ and npm 11+
 - PostgreSQL 18 running locally
+- Redis 7+ running locally (used for queue and cache)
 - *(Optional)* [Ollama](https://ollama.ai/) for AI features
 
 ### Install
