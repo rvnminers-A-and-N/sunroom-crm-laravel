@@ -1,23 +1,23 @@
-# Sunroom CRM — Laravel
+# Sunroom CRM — Laravel Full-Stack
 
-This is the Laravel full-stack implementation of [Sunroom CRM](https://sunroomcrm.net), built on the **TALL stack** (Tailwind CSS, Alpine.js, Livewire, Laravel) with a paired REST API, backed by PostgreSQL.
+A full-featured customer relationship management application built with Laravel 13, Livewire 3, and Tailwind CSS 4. This is the Laravel full-stack implementation of [Sunroom CRM](https://sunroomcrm.net), backed by PostgreSQL with a paired Sanctum-authenticated REST API.
 
 ## About Sunroom CRM
 
-Sunroom CRM is a multi-frontend platform where the same business requirements are implemented across multiple technology stacks. The project showcases how different frontend ecosystems approach the same real-world problems: authentication, CRUD operations, real-time data visualization, drag-and-drop workflows, role-based access control, and AI-powered features.
+Sunroom CRM is a multi-frontend CRM platform designed to demonstrate the same business requirements implemented across multiple modern frameworks — all sharing a single .NET 8 REST API and SQL Server database. The project showcases how different frontend ecosystems approach the same real-world problems: authentication, CRUD operations, real-time data visualization, drag-and-drop workflows, role-based access control, and AI-powered features.
 
-Every frontend shares a single .NET 8 REST API and SQL Server database, and this Laravel build additionally serves its own Sanctum-authenticated API that the SPA frontends can use as a drop-in replacement for the .NET backend.
+This Laravel build additionally serves its own Sanctum-authenticated API that the SPA frontends can use as a drop-in replacement for the .NET backend.
 
 ### The Full Stack
 
 | Repository | Technology | Description |
-|------------|-----------|-------------|
-| [`sunroom-crm-dotnet`](https://github.com/rvnminers-A-and-N/sunroom-crm-dotnet) | .NET 8 / EF Core | Shared REST API with JWT auth, AI endpoints, and Docker support |
-| [`sunroom-crm-angular`](https://github.com/rvnminers-A-and-N/sunroom-crm-angular) | Angular 21 | Angular frontend with 100% test coverage |
-| [`sunroom-crm-react`](https://github.com/rvnminers-A-and-N/sunroom-crm-react) | React 19 / Vite | React frontend with 100% test coverage |
-| [`sunroom-crm-vue`](https://github.com/rvnminers-A-and-N/sunroom-crm-vue) | Vue 3 / Vite | Vue frontend |
-| [`sunroom-crm-blazor`](https://github.com/rvnminers-A-and-N/sunroom-crm-blazor) | Blazor / .NET 8 | WebAssembly frontend |
-| **`sunroom-crm-laravel`** | **Laravel 13 / Livewire 3** | **Full-stack (backend + frontend) with 100% test coverage** |
+|------------|------------|-------------|
+| [sunroom-crm-dotnet](https://github.com/rvnminers-A-and-N/sunroom-crm-dotnet) | .NET 8 / EF Core | Shared REST API with JWT auth, AI endpoints, and Docker support |
+| [sunroom-crm-angular](https://github.com/rvnminers-A-and-N/sunroom-crm-angular) | Angular 21 | Angular frontend with 100% test coverage |
+| [sunroom-crm-react](https://github.com/rvnminers-A-and-N/sunroom-crm-react) | React 19 / Vite | React frontend with 100% test coverage |
+| [sunroom-crm-vue](https://github.com/rvnminers-A-and-N/sunroom-crm-vue) | Vue 3 / Vite | Vue frontend |
+| [sunroom-crm-blazor](https://github.com/rvnminers-A-and-N/sunroom-crm-blazor) | Blazor / .NET 8 | WebAssembly frontend |
+| **sunroom-crm-laravel** (this repo) | Laravel 13 / Livewire 3 | Full-stack (backend + frontend) with 100% test coverage |
 
 ## Tech Stack
 
@@ -38,16 +38,17 @@ Every frontend shares a single .NET 8 REST API and SQL Server database, and this
 
 ## Features
 
-- **Dashboard** — stat cards, pipeline value chart (Chart.js), recent activity feed
-- **Contacts** — paginated CRUD with search, company/tag filters, tag chips, activity timeline
+- **Authentication** — Session-based login and registration via Laravel Breeze, plus Sanctum-authenticated REST API tokens
+- **Dashboard** — Stat cards, pipeline value chart (Chart.js), and recent activity feed
+- **Contacts** — Paginated CRUD with search, company/tag filters, tag chips, and activity timeline
 - **Companies** — CRUD with industry, location, contact and deal counts
-- **Deals** — table view + drag-and-drop Kanban pipeline (SortableJS) with auto-set close dates for Won/Lost
-- **Activities** — type-filtered timeline (Note / Call / Email / Meeting / Task) tied to contacts and deals
-- **AI Assistant** — chat-style assistant grounded in the user's CRM data, deal-specific insight generation, optional Ollama integration
-- **Settings** — tabbed Profile / Password / Tag manager (with native color picker)
-- **Admin User Management** — admin-only CRUD for users with role assignment
-- **REST API** — full Sanctum-authenticated REST surface mirroring the .NET API contract so the SPA frontends work with this Laravel backend unchanged
-- **Responsive Layout** — sidebar navigation with mobile-friendly collapse
+- **Deals** — Table view plus drag-and-drop Kanban pipeline (SortableJS) with auto-set close dates for Won/Lost
+- **Activities** — Type-filtered timeline (Note / Call / Email / Meeting / Task) tied to contacts and deals
+- **AI Assistant** — Chat-style assistant grounded in the user's CRM data, deal-specific insight generation, optional Ollama integration
+- **Settings** — Tabbed Profile / Password / Tag manager with a native color picker
+- **Admin User Management** — Admin-only CRUD for users with role assignment
+- **REST API** — Full Sanctum-authenticated REST surface mirroring the .NET API contract so the SPA frontends work with this Laravel backend unchanged
+- **Responsive Layout** — Sidebar navigation with mobile-friendly collapse
 
 ## Getting Started
 
@@ -175,13 +176,15 @@ A Node.js test script (`tests/ApiCompat/api-compat.test.mjs`) registers a user o
 
 GitHub Actions runs five jobs on every push and pull request:
 
-| Job | Description |
-|-----|-------------|
-| **Pint** | Code style check — fails fast before tests run |
-| **PEST** | Unit and feature tests on PHP 8.4 and 8.5 with 100% coverage gate |
-| **Dusk** | Browser tests in headless Chrome against PostgreSQL |
-| **Playwright** | Cross-browser E2E across Chromium, Firefox, and WebKit |
-| **API Compat** | Spins up the .NET API via Docker Compose and compares response shapes (gated behind `RUN_API_COMPAT` variable) |
+**Pint** — Code style check. Fails fast before the test jobs run so formatting issues surface in seconds.
+
+**PEST** — Unit and feature tests on PHP 8.4 and 8.5 with a 100% line coverage gate against PostgreSQL.
+
+**Dusk** — Browser tests in headless Chrome exercising the Livewire component behaviour end-to-end.
+
+**Playwright** — Cross-browser E2E across Chromium, Firefox, and WebKit to verify the golden-path renders and works everywhere.
+
+**API Compat** — Spins up the .NET API via Docker Compose and compares response shapes to guarantee the Laravel and .NET backends are interchangeable. Gated behind the `RUN_API_COMPAT` repository variable.
 
 ## REST API
 
