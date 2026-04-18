@@ -29,6 +29,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('deals/{id}', DealDetail::class)->name('deals.show');
     Route::get('activities', ActivityList::class)->name('activities.index');
     Route::get('ai', AiAssistant::class)->name('ai.index');
+    Route::post('ai/ask/stream', [\App\Http\Controllers\Api\AiController::class, 'askStream'])->name('ai.ask.stream');
+    Route::post('ai/search/stream', [\App\Http\Controllers\Api\AiController::class, 'searchStream'])->name('ai.search.stream');
+    Route::post('ai/deal-insights/{dealId}/stream', [\App\Http\Controllers\Api\AiController::class, 'dealInsightsStream'])->name('ai.deal-insights.stream');
     Route::get('settings', Settings::class)->name('settings');
 });
 

@@ -51,8 +51,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // AI
     Route::prefix('ai')->group(function () {
         Route::post('summarize', [AiController::class, 'summarize']);
+        Route::post('summarize/stream', [AiController::class, 'summarizeStream']);
+        Route::post('ask/stream', [AiController::class, 'askStream']);
         Route::post('deal-insights/{dealId}', [AiController::class, 'dealInsights']);
+        Route::post('deal-insights/{dealId}/stream', [AiController::class, 'dealInsightsStream']);
         Route::post('search', [AiController::class, 'search']);
+        Route::post('search/stream', [AiController::class, 'searchStream']);
     });
 
     // Users (admin only)
