@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Activity;
 use App\Models\Contact;
-use App\Models\Deal;
 use App\Services\OllamaService;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
