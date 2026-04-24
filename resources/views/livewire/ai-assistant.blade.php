@@ -175,7 +175,7 @@
                        placeholder="Ask anything about your CRM..."
                        :disabled="$wire.loading"
                        class="flex-1 border-gray-300 rounded-lg text-sm focus:border-emerald-500 focus:ring-emerald-500">
-                <x-primary-button type="submit" :disabled="$wire.loading">
+                <x-primary-button type="submit" :disabled="$loading">
                     <span x-show="!$wire.loading" class="flex items-center gap-1.5">
                         Send
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -294,7 +294,7 @@
                        placeholder="Search your CRM with natural language..."
                        :disabled="$wire.searchLoading"
                        class="flex-1 border-gray-300 rounded-lg text-sm focus:border-emerald-500 focus:ring-emerald-500">
-                <x-primary-button type="submit" :disabled="$wire.searchLoading">
+                <x-primary-button type="submit" :disabled="$searchLoading">
                     <span x-show="!$wire.searchLoading" class="flex items-center gap-1.5">
                         Search
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -413,7 +413,7 @@
                        placeholder="Enter Deal ID..."
                        :disabled="$wire.insightsLoading"
                        class="w-48 border-gray-300 rounded-lg text-sm focus:border-emerald-500 focus:ring-emerald-500">
-                <x-primary-button type="submit" :disabled="$wire.insightsLoading">
+                <x-primary-button type="submit" :disabled="$insightsLoading">
                     <span x-show="!$wire.insightsLoading" class="flex items-center gap-1.5">
                         Generate Insights
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
