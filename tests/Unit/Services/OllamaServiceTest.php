@@ -170,3 +170,92 @@ it('returns an empty string when the response key is missing', function () {
 
     expect(makeOllamaService()->summarize('hi'))->toBe('');
 });
+
+it('streams tokens to the callback from NDJSON response', function () {
+    $ndjson = json_encode(['response' => 'Hello'])."\n\n"
+        .json_encode(['response' => ' world'])."\n"
+        .json_encode(['response' => '', 'done' => true])."\n";
+
+    Http::fake([
+        '*/api/generate' => Http::response($ndjson, 200),
+    ]);
+
+    $tokens = [];
+    makeOllamaService()->streamToCallback('test prompt', function ($token) use (&$tokens) {
+        $tokens[] = $token;
+    });
+
+    expect($tokens)->toBe(['Hello', ' world']);
+});
+
+it('sends the disabled message when streaming with service disabled', function () {
+    Http::fake();
+
+    $tokens = [];
+    makeOllamaService(['enabled' => false])->streamToCallback('test', function ($token) use (&$tokens) {
+        $tokens[] = $token;
+    });
+
+    expect($tokens)->toBe(['AI features are disabled.']);
+    Http::assertNothingSent();
+});
+
+it('logs an error when stream returns non-success status', function () {
+    Http::fake([
+        '*/api/generate' => Http::response('', 500),
+    ]);
+    Log::spy();
+
+    $tokens = [];
+    makeOllamaService()->streamToCallback('test', function ($token) use (&$tokens) {
+        $tokens[] = $token;
+    });
+
+    expect($tokens)->toBeEmpty();
+    Log::shouldHaveReceived('error')->once();
+});
+
+it('logs an error when stream throws an exception', function () {
+    Http::fake(function () {
+        throw new RuntimeException('connection failed');
+    });
+    Log::spy();
+
+    $tokens = [];
+    makeOllamaService()->streamToCallback('test', function ($token) use (&$tokens) {
+        $tokens[] = $token;
+    });
+
+    expect($tokens)->toBeEmpty();
+    Log::shouldHaveReceived('error')->once();
+});
+
+it('builds a deal insights prompt with deal and activity context', function () {
+    $deal = (new Deal)->forceFill([
+        'title' => 'Enterprise Deal',
+        'value' => 50000.00,
+        'stage' => DealStage::Proposal,
+    ]);
+
+    $activities = collect([
+        (new Activity)->forceFill([
+            'type' => ActivityType::Call,
+            'subject' => 'Discovery call',
+            'body' => 'Discussed needs',
+        ]),
+        (new Activity)->forceFill([
+            'type' => ActivityType::Note,
+            'subject' => 'Follow-up',
+            'body' => null,
+        ]),
+    ]);
+
+    $prompt = makeOllamaService()->buildDealInsightsPrompt($deal, $activities);
+
+    expect($prompt)
+        ->toContain('Enterprise Deal')
+        ->toContain('50,000.00')
+        ->toContain(DealStage::Proposal->value)
+        ->toContain('[Call] Discovery call: Discussed needs')
+        ->toContain('[Note] Follow-up: No details');
+});

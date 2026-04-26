@@ -161,44 +161,39 @@ class OllamaService
         }
 
         try {
-            $buffer = '';
-            $ch = curl_init("{$this->baseUrl}/api/generate");
-            curl_setopt_array($ch, [
-                CURLOPT_POST => true,
-                CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-                CURLOPT_POSTFIELDS => json_encode([
+            $response = Http::timeout(300)
+                ->withOptions(['stream' => true])
+                ->post("{$this->baseUrl}/api/generate", [
                     'model' => $this->model,
                     'prompt' => $prompt,
                     'stream' => true,
-                ]),
-                CURLOPT_RETURNTRANSFER => false,
-                CURLOPT_TIMEOUT => 300,
-                CURLOPT_WRITEFUNCTION => function ($ch, $data) use ($onToken, &$buffer) {
-                    $buffer .= $data;
-                    $lines = explode("\n", $buffer);
-                    $buffer = array_pop($lines);
+                ]);
 
-                    foreach ($lines as $line) {
-                        $line = trim($line);
-                        if ($line === '') {
-                            continue;
-                        }
-                        $json = json_decode($line, true);
-                        if ($json && ! empty($json['response'])) {
-                            $onToken($json['response']);
-                        }
+            if (! $response->successful()) {
+                Log::error('Ollama stream failed', ['status' => $response->status()]);
+
+                return;
+            }
+
+            $body = $response->toPsrResponse()->getBody();
+            $buffer = '';
+
+            while (! $body->eof()) {
+                $chunk = $body->read(8192);
+                $buffer .= $chunk;
+                $lines = explode("\n", $buffer);
+                $buffer = array_pop($lines);
+
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if ($line === '') {
+                        continue;
                     }
-
-                    return strlen($data);
-                },
-            ]);
-
-            curl_exec($ch);
-            $err = curl_error($ch);
-            curl_close($ch);
-
-            if ($err) {
-                Log::error('Ollama stream error', ['error' => $err]);
+                    $json = json_decode($line, true);
+                    if ($json && ! empty($json['response'])) {
+                        $onToken($json['response']);
+                    }
+                }
             }
         } catch (\Throwable $e) {
             Log::error('Ollama stream exception', ['error' => $e->getMessage()]);
