@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         // Users
         $admin = User::create([
             'name' => 'Austin Sunroom',
-            'email' => 'admin@sunroomcrm.com',
+            'email' => 'admin@sunroomcrm.net',
             'password' => 'password123',
             'role' => UserRole::Admin,
             'email_verified_at' => now(),
@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
 
         $manager = User::create([
             'name' => 'Sarah Manager',
-            'email' => 'sarah@sunroomcrm.com',
+            'email' => 'sarah@sunroomcrm.net',
             'password' => 'password123',
             'role' => UserRole::Manager,
             'email_verified_at' => now(),
@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
 
         $user = User::create([
             'name' => 'Jake Sales',
-            'email' => 'jake@sunroomcrm.com',
+            'email' => 'jake@sunroomcrm.net',
             'password' => 'password123',
             'role' => UserRole::User,
             'email_verified_at' => now(),
